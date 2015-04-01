@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="api.hh.ru tests" verbose="1">
+    <listeners>
+        <listener class-name="ru.hh.api.tests.common.CommonTestListener"/>
+    </listeners>
+
+    <test name="Me">
+        <packages>
+            <package name="ru.hh.api.me"/>
+        </packages>
+    </test>
+</suite>

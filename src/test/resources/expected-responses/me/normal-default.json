@@ -1,0 +1,21 @@
+{
+  "last_name": "apl001-surname",
+  "resumes_url": "https://api.hh.ru/resumes/mine",
+  "is_admin": false,
+  "is_employer": false,
+  "personal_manager": null,
+  "id": "23157474",
+  "first_name": "apl001-name",
+  "middle_name": null,
+  "is_in_search": true,
+  "is_anonymous": false,
+  "employer": null,
+  "negotiations_url": "https://api.hh.ru/negotiations",
+  "is_applicant": true,
+  "mid_name": null,
+  "email": "apl001@mail.ru",
+  "counters": {
+    "unread_negotiations": 0,
+    "new_resume_views": 0
+  }
+}
