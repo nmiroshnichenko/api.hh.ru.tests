@@ -55,6 +55,21 @@
             <scope>test</scope>
         </dependency>
 
+        <!--Json assertions lib (depends on Gson or Jackson lib)-->
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit</artifactId>
+            <version>1.5.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--Json lib -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
         <!-- http client -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

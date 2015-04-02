@@ -19,16 +19,38 @@ public class MeTest extends BaseTest {
 
   @Test
   public synchronized void post() {
-    verifyPost(URL, "is_in_search=true",
+    verifyPost(URL,
+        "is_in_search=false",
         new ExpectedResponse()
             .setStatusLine("HTTP/1.1 204 No Content")
             .setContent(null));
   }
 
-  @AfterTest
-  public void tearDown() throws Exception {
-// we should change back the initial data
-//    TODO post
+  @Test
+  public synchronized void post2() {
+    verifyPost(URL,
+        "last_name=Иванов&first_name=Иван&middle_name=Иванович",
+        new ExpectedResponse()
+            .setStatusLine("HTTP/1.1 204 No Content")
+            .setContent(null));
+  }
 
+  @AfterTest(description = "Clean up: change back the initial data" +
+      " that was modified during the test")
+  public void tearDown() throws Exception {
+     verifyPost(URL,
+        "last_name=apl001-surname&first_name=apl001-name&middle_name=",
+        new ExpectedResponse()
+            .setStatusLine("HTTP/1.1 204 No Content")
+            .setContent(null));
+
+    verifyPost(URL,
+        "is_in_search=true",
+        new ExpectedResponse()
+            .setStatusLine("HTTP/1.1 204 No Content")
+            .setContent(null));
+
+    verifyGet(URL, new ExpectedResponse()
+        .setContent(EXPECTED_CONTENT_DEFAULT));
   }
 }

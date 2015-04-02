@@ -10,6 +10,7 @@ import ru.hh.api.utils.ExpectedResponse;
 import ru.hh.api.utils.HttpClient;
 import ru.hh.api.utils.Log;
 
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -29,11 +30,17 @@ public abstract class BaseTest extends Log {
     verifyThat("Response status line as expected",
         actualResponse.getStatusLine(),
         equalTo(expectedResponse.getStatusLine()));
-
+/*
     // check response content
     verifyThat("Response body as expected",
         actualResponse.getContent(),
         equalTo(expectedResponse.getContent()));
+*/
+
+    // check response content (comparing as json)
+    verifyThat("Response body as expected",
+        actualResponse.getContent(),
+        jsonEquals(expectedResponse.getContent()));
 
     //TODO add checks for all possible opts in ExpectedResponse
 
