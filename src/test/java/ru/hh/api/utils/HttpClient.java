@@ -6,15 +6,20 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-public class HttpClient extends Log {
+public class HttpClient {
   private String accessToken;
   private String userAgent;
   private int socketTimeoutInMs;
   private int connectTimeoutInMs;
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   public HttpClient() {
     // Load our own config values from the default location,
@@ -30,23 +35,29 @@ public class HttpClient extends Log {
     connectTimeoutInMs = conf.getInt("connect-timeout-ms");
   }
 
-  public synchronized Request get(String url) {
+  public Request get(String url) {
     Request request = Request.Get(url);
     setCommonRequestParams(request);
     return request;
   }
 
-  public synchronized Request post(String url) {
+  public Request post(String url, String body) {
     Request request = Request.Post(url);
     setCommonRequestParams(request);
+    request.bodyString(body,
+        ContentType.APPLICATION_FORM_URLENCODED
+            .withCharset(StandardCharsets.UTF_8));
     return request;
   }
   // TODO add methods for all http methods
 
-  public synchronized ActualResponse send(Request request) {
-    ActualResponse actualResponse = new ActualResponse();
+  public Response send(Request request) {
+    Response actualResponse = ResponseFactory.getActual();
+    log.debug("send: " + request);
     try {
-      HttpResponse httpResponse = request.execute().returnResponse();
+      HttpResponse httpResponse;
+        httpResponse = request.execute().returnResponse();
+
       HttpEntity httpEntity = httpResponse.getEntity();
       actualResponse
           .setStatusLine(httpResponse.getStatusLine().toString());
@@ -69,15 +80,14 @@ public class HttpClient extends Log {
         headerStrings[i] = headers[i].getName() + ": " + headers[i].getValue();
       }
       actualResponse
-          .setHeadersFullList(headerStrings);
+          .setHeadersList(headerStrings);
     } catch (IOException e) {
-      warn(e.getMessage());
+      log.warn(e.getMessage());
     }
     return actualResponse;
   }
 
-  private synchronized void setCommonRequestParams(Request request) {
-    debug("request: " + request);
+  private void setCommonRequestParams(Request request) {
     request.addHeader("Authorization", "Bearer " + accessToken)
         .userAgent(userAgent)
         .connectTimeout(connectTimeoutInMs)

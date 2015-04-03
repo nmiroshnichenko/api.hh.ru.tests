@@ -1,80 +1,87 @@
 package ru.hh.api.tests.common;
 
 import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
 import org.hamcrest.Matcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import ru.hh.api.utils.ActualResponse;
-import ru.hh.api.utils.ExpectedResponse;
 import ru.hh.api.utils.HttpClient;
-import ru.hh.api.utils.Log;
+import ru.hh.api.utils.Response;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 @Test(singleThreaded = true)
-public abstract class BaseTest extends Log {
+public abstract class BaseTest {
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
   protected final HttpClient httpClient = new HttpClient();
-  public String failures = "";
+  private String failures = "";
 
-  protected synchronized void verifyRequest(
-      Request request,
-      ExpectedResponse expectedResponse) {
+  protected void verifyRequest(
+      final Request request,
+      final Response expectedResponse,
+      final boolean partial) {
 
     // send request and get actual response from server
-    ActualResponse actualResponse = httpClient.send(request);
+    Response actualResponse = httpClient.send(request);
 
     // check status line
     verifyThat("Response status line as expected",
         actualResponse.getStatusLine(),
         equalTo(expectedResponse.getStatusLine()));
-/*
-    // check response content
-    verifyThat("Response body as expected",
-        actualResponse.getContent(),
-        equalTo(expectedResponse.getContent()));
-*/
 
     // check response content (comparing as json)
-    verifyThat("Response body as expected",
-        actualResponse.getContent(),
-        jsonEquals(expectedResponse.getContent()));
+    if (partial == true) {
+      verifyThat("Response partial json content as expected",
+          actualResponse.getContent(),
+          jsonEquals(expectedResponse.getContent())
+              .when(IGNORING_EXTRA_FIELDS));
+    } else {
+      verifyThat("Response json content as expected",
+          actualResponse.getContent(),
+          jsonEquals(expectedResponse.getContent()));
+    }
 
-    //TODO add checks for all possible opts in ExpectedResponse
+    // check response headers
+    String actualHeaders = String.join("; ",
+        actualResponse.getHeadersList());
+    for (String expectedHeader : expectedResponse.getHeadersList()) {
+      verifyThat("Response headers as expected",
+          actualHeaders,
+          containsString(expectedHeader));
+    }
+
+    //TODO add checks for expected headers without checking their values (e.g. request-id)
 
     checkFailures();
   }
 
-  protected synchronized void verifyGet(
+  protected void verifyGet(
       String url,
-      ExpectedResponse expectedResponse) {
+      Response expectedResponse) {
 
-    verifyRequest(httpClient.get(url), expectedResponse);
+    verifyRequest(httpClient.get(url), expectedResponse, true);
   }
 
-  protected synchronized void verifyPost(
+  protected void verifyGetFull(
+      String url,
+      Response expectedResponse) {
+
+    verifyRequest(httpClient.get(url), expectedResponse, false);
+  }
+
+  protected void verifyPost(
       String url,
       String body,
-      ContentType contentType,
-      ExpectedResponse expectedResponse) {
+      Response expectedResponse) {
 
     verifyRequest(
-        httpClient.post(url).bodyString(body, contentType),
-        expectedResponse);
-  }
-
-  protected synchronized void verifyPost(
-      String url,
-      String body,
-      ExpectedResponse expectedResponse) {
-
-    verifyPost(
-        url,
-        body,
-        ContentType.APPLICATION_FORM_URLENCODED,
-        expectedResponse);
+        httpClient.post(url, body),
+        expectedResponse, false);
   }
 
   protected <T> void verifyThat(
@@ -106,6 +113,6 @@ public abstract class BaseTest extends Log {
   private void logFailure(AssertionError e) {
     String msg = e.toString();
     failures += "\n" + msg;
-    error(msg);
+    log.error(msg);
   }
 }

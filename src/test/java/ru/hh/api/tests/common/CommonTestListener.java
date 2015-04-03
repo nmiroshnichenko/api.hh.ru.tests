@@ -1,14 +1,16 @@
 package ru.hh.api.tests.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import ru.hh.api.utils.Log;
 
 /**
- * Created by user on 30.03.15 18:28.
+ * Standard testng listener for logging etc
  */
-public class CommonTestListener extends Log implements ITestListener {
+public class CommonTestListener implements ITestListener {
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   /**
    * Invoked each time before a test will be invoked.
@@ -20,7 +22,7 @@ public class CommonTestListener extends Log implements ITestListener {
    */
   @Override
   public void onTestStart(ITestResult result) {
-    info("test method '" + result.getMethod().getMethodName() + "' started");
+    log.info("test method '" + result.getMethod().getMethodName() + "' started");
   }
 
   /**
@@ -31,7 +33,7 @@ public class CommonTestListener extends Log implements ITestListener {
    */
   @Override
   public void onTestSuccess(ITestResult result) {
-    info("test method '" + result.getMethod().getMethodName() + "' OK");
+    log.info("test method '" + result.getMethod().getMethodName() + "' OK");
   }
 
   /**
@@ -42,7 +44,7 @@ public class CommonTestListener extends Log implements ITestListener {
    */
   @Override
   public void onTestFailure(ITestResult result) {
-    info("test method '" + result.getMethod().getMethodName() + "' failed");
+    log.info("test method '" + result.getMethod().getMethodName() + "' failed");
   }
 
   /**
@@ -53,7 +55,7 @@ public class CommonTestListener extends Log implements ITestListener {
    */
   @Override
   public void onTestSkipped(ITestResult result) {
-    info("test method '" + result.getMethod().getMethodName() + "' skipped");
+    log.info("test method '" + result.getMethod().getMethodName() + "' skipped");
   }
 
   /**
@@ -77,7 +79,7 @@ public class CommonTestListener extends Log implements ITestListener {
    */
   @Override
   public void onStart(ITestContext context) {
-    info("test '" + context.getName() + "' initialized");
+    log.info("test '" + context.getName() + "' initialized");
   }
 
   /**
@@ -88,6 +90,6 @@ public class CommonTestListener extends Log implements ITestListener {
    */
   @Override
   public void onFinish(ITestContext context) {
-    info("test '" + context.getName() + "' finished");
+    log.info("test '" + context.getName() + "' finished");
   }
 }
