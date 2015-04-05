@@ -4,7 +4,7 @@
         <listener class-name="ru.hh.api.tests.common.CommonTestListener"/>
     </listeners>
 
-    <test name="Me">
+    <test name="Me" parallel="methods" thread-count="20">
         <packages>
             <package name="ru.hh.api.me"/>
         </packages>

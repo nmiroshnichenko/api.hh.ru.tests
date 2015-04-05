@@ -47,13 +47,14 @@ public class HttpClient {
     request.bodyString(body,
         ContentType.APPLICATION_FORM_URLENCODED
             .withCharset(StandardCharsets.UTF_8));
+    log.debug("prepared next request body: " + body);
     return request;
   }
   // TODO add methods for all http methods
 
   public Response send(Request request) {
-    Response actualResponse = ResponseFactory.getActual();
-    log.debug("send: " + request);
+    Response actualResponse = ResponseFactory.getNewEmpty();
+    log.info("send: " + request);
     try {
       HttpResponse httpResponse;
         httpResponse = request.execute().returnResponse();
@@ -67,6 +68,7 @@ public class HttpClient {
             .setContentLength(httpEntity.getContentLength())
             .setContentType(httpEntity.getContentType().toString())
             .setContent(EntityUtils.toString(httpEntity));
+        log.debug("got response body: " + actualResponse.getContent());
         if (httpEntity.getContentEncoding() != null) {
           actualResponse
               .setContentEncoding(httpEntity.getContentEncoding().toString());
@@ -82,7 +84,7 @@ public class HttpClient {
       actualResponse
           .setHeadersList(headerStrings);
     } catch (IOException e) {
-      log.warn(e.getMessage());
+      e.printStackTrace();
     }
     return actualResponse;
   }

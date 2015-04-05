@@ -15,14 +15,22 @@ public final class FileUtils {
    * @throws IOException
    * @throws URISyntaxException
    */
-  public final String readFile(String filePath) throws
-      IOException, URISyntaxException {
+  public final String readFile(String filePath) throws RuntimeException {
 
-    URI fileLocation = this.getClass().getClassLoader()
-        .getResource(filePath)
-        .toURI();
+    URI fileLocation = null;
+    try {
+      fileLocation = this.getClass().getClassLoader()
+          .getResource(filePath)
+          .toURI();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e.getMessage());
+    }
 
-    return new String(java.nio.file.Files.readAllBytes(
-        Paths.get(fileLocation)));
+    try {
+      return new String(java.nio.file.Files.readAllBytes(
+          Paths.get(fileLocation)));
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage());
+    }
   }
 }

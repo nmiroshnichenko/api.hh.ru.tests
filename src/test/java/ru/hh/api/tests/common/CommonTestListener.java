@@ -22,7 +22,12 @@ public class CommonTestListener implements ITestListener {
    */
   @Override
   public void onTestStart(ITestResult result) {
-    log.info("test method '" + result.getMethod().getMethodName() + "' started");
+    log.info("test method '" + result.getMethod().getMethodName()
+        + "' started");
+    String description = result.getMethod().getDescription();
+    if (description != null) {
+      log.info(String.format("description: %s", description));
+    }
   }
 
   /**
@@ -33,7 +38,8 @@ public class CommonTestListener implements ITestListener {
    */
   @Override
   public void onTestSuccess(ITestResult result) {
-    log.info("test method '" + result.getMethod().getMethodName() + "' OK");
+    log.info("test method '" + result.getMethod().getMethodName()
+        + "' OK");
   }
 
   /**
@@ -44,7 +50,8 @@ public class CommonTestListener implements ITestListener {
    */
   @Override
   public void onTestFailure(ITestResult result) {
-    log.info("test method '" + result.getMethod().getMethodName() + "' failed");
+    log.info("test method '" + result.getMethod().getMethodName()
+        + "' failed");
   }
 
   /**
@@ -55,7 +62,8 @@ public class CommonTestListener implements ITestListener {
    */
   @Override
   public void onTestSkipped(ITestResult result) {
-    log.info("test method '" + result.getMethod().getMethodName() + "' skipped");
+    log.info("test method '" + result.getMethod().getMethodName()
+        + "' skipped");
   }
 
   /**
@@ -93,3 +101,4 @@ public class CommonTestListener implements ITestListener {
     log.info("test '" + context.getName() + "' finished");
   }
 }
+
