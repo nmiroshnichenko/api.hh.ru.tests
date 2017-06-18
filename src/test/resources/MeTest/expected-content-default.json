@@ -1,0 +1,21 @@
+{
+  "last_name": "test-applicant-ln",
+  "resumes_url": "https://api.hh.ru/resumes/mine",
+  "is_admin": false,
+  "is_employer": false,
+  "personal_manager": null,
+  "id": "23157474",
+  "first_name": "test-applicant-fn",
+  "middle_name": "test-applicant-mn",
+  "is_in_search": true,
+  "is_anonymous": false,
+  "employer": null,
+  "negotiations_url": "https://api.hh.ru/negotiations",
+  "is_applicant": true,
+  "mid_name": "test-applicant-mn",
+  "email": "apl001@mail.ru",
+  "counters": {
+    "unread_negotiations": 0,
+    "new_resume_views": 0
+  }
+}
